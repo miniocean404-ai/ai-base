@@ -63,6 +63,7 @@ class MnistModel(nn.Module):
     def __init__(self) -> None:
         super().__init__()
 
+        # Linear 层用于将指定维度的张量通过线性变换转化为输出层的维度的张量
         self.layer1 = nn.Linear(28 * 28, 256)
         # ReLU 激活：把所有负值变成 0，保留正值
         self.relu1 = nn.ReLU()
@@ -95,17 +96,22 @@ def verify_ui(model: MnistModel, data_set: torchvision.datasets.MNIST):
         # 获取图片和真实值
         image, label = data_set[idx]
 
+        print(image.size())
+        print(image.unsqueeze(0).size())
+
         # 不计算梯度（节省内存）, with 语法会在执行完后自动执行 __exit__ 方法释放资源
         with torch.no_grad():
             # 将图片输入模型获得预测，
-            # unsqueeze 用于将二维数组图数据 [[1, 2], [3, 4]] 片转化为四维数组 [[[1, 2], [3, 4]]], 之前：[高度，宽度，通道数] -> [224, 224, 3] (这是一张图片)，之后：[批次大小，高度，宽度，通道数] -> [1, 224, 224, 3] (这是一个包含一张图片的批次)
-            # unsqueeze 参数代表在哪个梯度进行扩展 dim=0: 在最前面加维度、dim=1: 在原来的第 0 维和第 1 维之间加维度、dim=-1: 在最后面加维度（非常常用）
+            # unsqueeze 表示在第 0 维（即最前面）增加一个维度, 之前：[通道数, 高度，宽度] 之后：[批次大小，通道数，高度，宽度]
+            # unsqueeze(dim) dim 是增加张量维度的索引(张量.size() 的值的索引)、-1 为最后面添加维度
             output = model(image.unsqueeze(0))
 
             # softmax 作用是将所有数值归一化为概率值，并且概率值之和为 1
-            # output = torch.softmax(output, dim=1)
+            output = torch.softmax(output, dim=1)
 
             # 返回指定维度上最大值的索引。
+            # 几维数组就是几维张量
+            # dim=1 的含义为在张量为 2 的维度上是 tensor[0][0] 获取到的值来进行操作, dim=0 的含义为在张量为 2 的维度上是 tensor[0] 获取到的值来进行操作
             pred = torch.argmax(output, dim=1).item()
 
         axes[i].imshow(image.squeeze(), cmap="gray")  # 显示 UI 灰度图片
