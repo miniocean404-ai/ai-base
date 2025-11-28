@@ -81,7 +81,7 @@ class MnistModel(nn.Module):
         return x
 
 
-def verify(model: MnistModel, data_set: torchvision.datasets.MNIST):
+def verify_ui(model: MnistModel, data_set: torchvision.datasets.MNIST):
     # 将模型设置为评估模式（不训练）
     model.eval()
 
@@ -103,13 +103,13 @@ def verify(model: MnistModel, data_set: torchvision.datasets.MNIST):
             output = model(image.unsqueeze(0))
 
             # softmax 作用是将所有数值归一化为概率值，并且概率值之和为 1
-            output = torch.softmax(output, dim=1)
+            # output = torch.softmax(output, dim=1)
 
             # 返回指定维度上最大值的索引。
             pred = torch.argmax(output, dim=1).item()
 
         axes[i].imshow(image.squeeze(), cmap="gray")  # 显示 UI 灰度图片
-        axes[i].set_title(f"预测: {pred}")  # 设置 UI 为预测结果
+        axes[i].set_title(f"Predicted: {pred}")  # 设置 UI 为预测结果
         axes[i].axis("off")  # 隐藏坐标轴
 
     # 显示 UI 图表
@@ -157,12 +157,12 @@ mnist_model = MnistModel()
 
 def train_main():
     # 没有训练并且没有加载模型的时候测试一下模型准确率
-    verify(mnist_model, test_dataset)
+    verify_ui(mnist_model, test_dataset)
 
     # 训练模型
     train_model(mnist_model, train_loader, test_loader)
     # 训练后测试一下模型准确率
-    verify(mnist_model, test_dataset)
+    verify_ui(mnist_model, test_dataset)
     # 训练后保存模型
     save_model(mnist_model, model_path)
 
@@ -171,7 +171,7 @@ def use_main():
     mnist_model.load_state_dict(torch.load(model_path))
     print("✅ 本地加载模型成功")
     mnist_model.eval()
-    verify(mnist_model, test_dataset)
+    verify_ui(mnist_model, test_dataset)
 
 
 def main():
