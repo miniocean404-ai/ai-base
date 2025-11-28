@@ -1,4 +1,4 @@
-from huggingface_hub import HfApi, upload_file
+from huggingface_hub import HfApi, hf_hub_download, upload_file
 
 from ocr.main import MnistModel
 
@@ -14,3 +14,10 @@ def upload_model(model: MnistModel):
         repo_id="miniocean404/simple-nn",  # 仓库 ID
         repo_type="model",  # 仓库类型为模型
     )
+
+
+def download_model(model_path: str):
+    """
+    download_model 从 hugging face 下载模型权重文件
+    """
+    hf_hub_download(repo_id="miniocean404/simple-nn", filename="simple.bin")

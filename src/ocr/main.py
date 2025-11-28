@@ -168,8 +168,6 @@ def train_main():
 
 
 def use_main():
-    # 从 hugging face 下载模型权重文件
-    # model_path = hf_hub_download (repo_id="miniocean404/simple-nn", filename="simple.bin")
     mnist_model.load_state_dict(torch.load(model_path))
     print("✅ 本地加载模型成功")
     mnist_model.eval()
