@@ -5,8 +5,23 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "huggingface-hub>=0.34.4",
-    "matplotlib>=3.10.6",
-    "torch>=2.8.0",
-    "torchvision>=0.23.0",
+  "huggingface-hub>=1.1.6",
+  "matplotlib>=3.10.7",
+  "tiktoken>=0.12.0",
+  "torch>=2.9.1",
+  "torchvision>=0.24.1",
 ]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+# 当设置 explicit = true 时，该索引将 不会 被自动用于解析未明确指定来源的依赖包。只有那些在 [tool.uv.sources] 中显式声明使用该索引的包，才会从这里查找
+explicit = true
