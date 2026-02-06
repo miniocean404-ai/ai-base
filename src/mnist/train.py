@@ -148,17 +148,3 @@ def load_model(path):
     model = MnisModel()
     model.load_state_dict(torch.load(path))
     return model
-
-
-def main():
-    train_loader, test_loader, train_dataset, test_dataset = download_mnist()
-    model = MnisModel()
-    train(model, train_loader)
-    predict(model, test_dataset)
-    save_model(model, "model.pth")
-    # model = load_model("model.pth")
-    # predict(model, test_dataset)
-
-
-if __name__ == "__main__":
-    main()

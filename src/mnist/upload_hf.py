@@ -1,9 +1,9 @@
 from huggingface_hub import HfApi, hf_hub_download, upload_file
 
-from mnist.main import MnistModel
+from mnist.train import MnisModel
 
 
-def upload_model(model: MnistModel):
+def upload_model(model: MnisModel):
     """
     upload_model 保存模型参数到 hugging face hub
     """
