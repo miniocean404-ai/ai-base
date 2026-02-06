@@ -1,6 +1,6 @@
 from huggingface_hub import HfApi, hf_hub_download, upload_file
 
-from ocr.main import MnistModel
+from mnist.main import MnistModel
 
 
 def upload_model(model: MnistModel):
