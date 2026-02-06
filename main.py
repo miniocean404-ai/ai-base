@@ -1,4 +1,4 @@
-from mnist import train
+from mnist import predict, train, utils
 from utils import DEVICE
 from utils.file import create_dir
 
@@ -10,13 +10,12 @@ def train_mnist():
     # 将模型迁移到 GPU/CPU
     model.to(DEVICE)
 
-    train.train(model, train_loader)
-    train.predict(model, test_dataset)
+    train.start(model, train_loader)
+    predict.start(model, test_dataset)
 
     train_model_path = "train/mnist_model.pth"
     create_dir(train_model_path)
-
-    train.save_model(model, train_model_path)
+    utils.save_model(model, train_model_path)
     # model = train.load_model(train_model_path)
     # train.predict(model, test_dataset)
 
