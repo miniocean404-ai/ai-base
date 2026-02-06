@@ -1,15 +1,23 @@
 from mnist import train
-from mnist.train import device
+from utils import DEVICE
+from utils.file import create_dir
 
 
 def train_mnist():
-    print(f"使用设备: {device}")
+    print(f"使用设备: {DEVICE}")
     train_loader, test_loader, train_dataset, test_dataset = train.download_mnist()
-    model = train.MnisModel().to(device)  # 将模型迁移到 GPU/CPU
+    model = train.MnisModel()
+    # 将模型迁移到 GPU/CPU
+    model.to(DEVICE)
+
     train.train(model, train_loader)
     train.predict(model, test_dataset)
-    train.save_model(model, "model.pth")
-    # model = train.load_model("model.pth")
+
+    train_model_path = "train/mnist_model.pth"
+    create_dir(train_model_path)
+
+    train.save_model(model, train_model_path)
+    # model = train.load_model(train_model_path)
     # train.predict(model, test_dataset)
 
 
