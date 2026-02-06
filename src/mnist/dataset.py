@@ -28,7 +28,7 @@ def download_mnist():
     # 创建训练数据加载器
     train_loader = torch.utils.data.DataLoader(
         dataset=train_dataset,  # 使用上面的训练数据集
-        batch_size=64,  # 每次训练使用 64 张图片
+        batch_size=64,  # 原本有 10000 张图片, 修改为训练时使用 64 张图片
         shuffle=True,  # 随机打乱数据顺序
     )
 

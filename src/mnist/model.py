@@ -10,6 +10,7 @@ class MnisModel(nn.Module):
         super().__init__()
 
         self.layer1 = nn.Linear(28 * 28, 256)
+        # TODO ReLU 的含义
         self.relu1 = nn.ReLU()
         self.layer2 = nn.Linear(256, 128)
         self.relu2 = nn.ReLU()

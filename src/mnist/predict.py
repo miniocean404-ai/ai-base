@@ -37,17 +37,21 @@ def start(model, data_set: torchvision.datasets.MNIST):
         # 不计算梯度（节省内存）, with 语法会在执行完后自动执行 __exit__ 方法释放资源
         with torch.no_grad():
             # 将图片输入模型获得预测,
-            # unsqueeze 用于将二维数组图数据 [[1, 2], [3, 4]] 片转化为四维数组 [[[1, 2], [3, 4]]], 之前：[高度, 宽度, 通道数] -> [224, 224, 3] (这是一张图片)，之后：[批次大小, 高度, 宽度, 通道数] -> [1, 224, 224, 3] (这是一个包含一张图片的批次)
-            # 参数 dim=0 参数代表在哪个梯度进行扩展, 在最前面加维度、dim=1: 在原来的第 0 维和第 1 维之间加维度、dim=-1: 在最后面加维度（非常常用）
-            output = model(image.unsqueeze(0).to(DEVICE))
+            # unsqueeze: 为张量增加维度, 之前：[高度, 宽度, 通道数] -> [224, 224, 3] (这是一张图片)，之后：[批次大小, 高度, 宽度, 通道数] -> [1, 224, 224, 3] (这是一个包含一张图片的批次)
+            #            参数 dim=0 参数代表在哪个梯度进行扩展, 在最前面加维度、dim=1: 在原来的第 0 维和第 1 维之间加维度、dim=-1: 在最后面加维度（非常常用）
+            # logits: 指模型在某一步对“下一个 token”给出的原始分数向量（还没做 softmax 的值）。
+            logits = model(image.unsqueeze(0).to(DEVICE))
 
             # softmax 作用是将所有数值归一化为概率值，并且概率值之和为 1
-            output = torch.softmax(output, dim=1)
+            # softmax 计算过程是将 dim 维度的第 N 个元素 / dim 维度的元素的总和, 结果为概率值
+            # dim=d 这一维上 把数变成概率（该维上的和为 1），而其它维的位置不变、分别独立计算。
+            probability = torch.softmax(logits, dim=1)
 
+            # TODO
             # 返回指定维度上最大值的索引。
             # 几维数组就是几维张量
-            # dim=1 的含义为在张量为 2 的维度上是 tensor[0][0] 获取到的值来进行操作, dim=0 的含义为在张量为 2 的维度上是 tensor[0] 获取到的值来进行操作
-            pred = torch.argmax(output, dim=1).item()  # 找到概率最大的类别的索引的值
+            # dim=1 的含义为在张量为 n 的维度上是 tensor[0][0] 获取到的值来进行操作, dim=0 的含义为在张量为 n 的维度上是 tensor[0] 获取到的值来进行操作
+            pred = torch.argmax(probability, dim=1).item()  # 找到概率最大的类别的索引的值
 
         axes[i].imshow(image.squeeze(), cmap="gray")  # 显示 UI 灰度图片
         axes[i].set_title(f"Predicted: {pred}")  # 设置 UI 标题显示预测结果

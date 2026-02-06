@@ -1,13 +1,16 @@
 import torch
 from torch import nn
 
+from mnist.model import MnisModel
+
 from ..utils.device import DEVICE
 
 # 设置随机种子：保证每次运行结果一致
 torch.manual_seed(1024)
 
 
-def start(model, train_loader):
+def start(model: MnisModel, train_loader: torch.utils.data.DataLoader):
+    # TODO CrossEntropyLoss、optimizer 的含义
     criterion = nn.CrossEntropyLoss()  # 定义损失函数（交叉熵损失）
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)  # 定义优化器（随机梯度下降）
 
