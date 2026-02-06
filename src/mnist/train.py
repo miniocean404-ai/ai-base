@@ -9,6 +9,9 @@ from torch import nn
 # 设置随机种子：保证每次运行结果一致
 torch.manual_seed(1024)
 
+# 自动检测可用设备：优先使用 GPU（CUDA），其次 CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 def get_mnist_real_data(dataset: torchvision.datasets.MNIST):
     """
@@ -98,6 +101,9 @@ def train(model, train_loader):
         running_loss = 0.0  # 初始化累计损失
 
         for i, (images, labels) in enumerate(train_loader):
+            # 将数据迁移到与模型相同的设备（GPU/CPU）
+            images, labels = images.to(device), labels.to(device)
+
             # 清除上一次迭代的梯度，确保每次迭代使用的是当前批次的梯度
             optimizer.zero_grad()
 
@@ -128,7 +134,7 @@ def predict(model, data_set: torchvision.datasets.MNIST):
             # 将图片输入模型获得预测,
             # unsqueeze 用于将二维数组图数据 [[1, 2], [3, 4]] 片转化为四维数组 [[[1, 2], [3, 4]]], 之前：[高度, 宽度, 通道数] -> [224, 224, 3] (这是一张图片)，之后：[批次大小, 高度, 宽度, 通道数] -> [1, 224, 224, 3] (这是一个包含一张图片的批次)
             # unsqueeze 参数代表在哪个梯度进行扩展dim=0: 在最前面加维度、dim=1: 在原来的第0维和第1维之间加维度、dim=-1: 在最后面加维度（非常常用）
-            output = model(image.unsqueeze(0))
+            output = model(image.unsqueeze(0).to(device))
             pred = torch.argmax(output, dim=1).item()  # 找到概率最大的类别的索引的值
 
         axes[i].imshow(image.squeeze(), cmap="gray")  # 显示 UI 灰度图片
@@ -146,5 +152,7 @@ def save_model(model, path):
 
 def load_model(path):
     model = MnisModel()
-    model.load_state_dict(torch.load(path))
+    # map_location 确保模型权重加载到当前可用设备，避免在无 GPU 机器上加载 GPU 模型时报错
+    model.load_state_dict(torch.load(path, map_location=device))
+    model.to(device)
     return model
