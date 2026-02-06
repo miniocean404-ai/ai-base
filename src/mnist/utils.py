@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import torch
 import torchvision
 
-from model import MnisModel
-from utils import DEVICE
+from .model import MnisModel
+from ..utils.device import DEVICE
 
 
 def save_model(model, path):

@@ -1,15 +1,16 @@
 import random
+from typing import cast
 
 import matplotlib.pyplot as plt
 import torch
 import torchvision
 
-from utils import DEVICE
+from ..utils.device import DEVICE
 
 
 def start(model, data_set: torchvision.datasets.MNIST):
     """
-    predict(预测) 预测模型
+    start 预测模型, predict(预测)
 
     Args:
         model (MnisModel): 模型
@@ -24,9 +25,11 @@ def start(model, data_set: torchvision.datasets.MNIST):
     fig, axes = plt.subplots(1, 5, figsize=(10, 2))
 
     for i in range(5):
-        idx = random.randint(0, len(data_set) - 1)
+        random_idx = random.randint(0, len(data_set) - 1)
 
-        image, label = data_set[idx]  # 获取图片和真实标签
+        # 获取图片和真实标签
+        image, label = cast(tuple[torch.Tensor, int], data_set[random_idx])
+
         # 打印图片和图片的维度
         print("image.size()", image.size())
         print("image.unsqueeze(0).size()", image.unsqueeze(0).size())
@@ -35,7 +38,7 @@ def start(model, data_set: torchvision.datasets.MNIST):
         with torch.no_grad():
             # 将图片输入模型获得预测,
             # unsqueeze 用于将二维数组图数据 [[1, 2], [3, 4]] 片转化为四维数组 [[[1, 2], [3, 4]]], 之前：[高度, 宽度, 通道数] -> [224, 224, 3] (这是一张图片)，之后：[批次大小, 高度, 宽度, 通道数] -> [1, 224, 224, 3] (这是一个包含一张图片的批次)
-            # unsqueeze 参数代表在哪个梯度进行扩展dim=0: 在最前面加维度、dim=1: 在原来的第0维和第1维之间加维度、dim=-1: 在最后面加维度（非常常用）
+            # 参数 dim=0 参数代表在哪个梯度进行扩展, 在最前面加维度、dim=1: 在原来的第 0 维和第 1 维之间加维度、dim=-1: 在最后面加维度（非常常用）
             output = model(image.unsqueeze(0).to(DEVICE))
 
             # softmax 作用是将所有数值归一化为概率值，并且概率值之和为 1

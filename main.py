@@ -1,6 +1,6 @@
-from mnist import predict, train, utils
-from utils import DEVICE
-from utils.file import create_dir
+from src.mnist import predict, train, utils
+from src.utils.device import DEVICE
+from src.utils.file import create_dir
 
 
 def train_mnist():

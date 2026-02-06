@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from utils import DEVICE
+from ..utils.device import DEVICE
 
 # 设置随机种子：保证每次运行结果一致
 torch.manual_seed(1024)
