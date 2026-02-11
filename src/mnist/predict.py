@@ -16,7 +16,7 @@ def start(model, data_set: torchvision.datasets.MNIST):
         model (MnisModel): 模型
         data_set (torchvision.datasets.MNIST): 数据集
     """
-    # 将模型设置为评估模式（也就是大模型运行时, 不训练）
+    # 将模型设置为评估模式（不训练）
     model.eval()
 
     # 创建 1 行 5 列的 ui 图表
@@ -47,11 +47,10 @@ def start(model, data_set: torchvision.datasets.MNIST):
             # dim=d 这一维上 把数变成概率（该维上的和为 1），而其它维的位置不变、分别独立计算。
             probability = torch.softmax(logits, dim=1)
 
-            # TODO
             # 返回指定维度上最大值的索引。
             # 几维数组就是几维张量
             # dim=1 的含义为在张量为 n 的维度上是 tensor[0][0] 获取到的值来进行操作, dim=0 的含义为在张量为 n 的维度上是 tensor[0] 获取到的值来进行操作
-            pred = torch.argmax(probability, dim=1).item()  # 找到概率最大的类别的索引的值
+            pred = torch.argmax(probability, dim=1).item()
 
         axes[i].imshow(image.squeeze(), cmap="gray")  # 显示 UI 灰度图片
         axes[i].set_title(f"Predicted: {pred}")  # 设置 UI 标题显示预测结果
